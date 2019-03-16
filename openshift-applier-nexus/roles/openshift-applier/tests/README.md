@@ -5,7 +5,7 @@ This area of the repo contains tests that can be run to check the `openshift-app
 
 ## Requirements
 - An execution environment where the `openshift-applier` can successfully operate
-  - Consider using the [openshift-applier docker image](https://hub.docker.com/r/redhatcop/openshift-applier/)
+  - Consider using the [openshift-applier docker image](https://quay.io/repository/redhat-cop/openshift-applier/)
 - A target OpenShift environment
   - *Note:* The `openshift-applier` needs access to the `oc` command
 
@@ -14,6 +14,16 @@ This area of the repo contains tests that can be run to check the `openshift-app
 - Ansible 2.5 or later
 - Operational OpenShift Cluster
 - `oc` client
+
+## Molecule Considerations
+
+All inventories located in the [inventories](inventories) directory will undergo testing and validation using [Molecule](https://molecule.readthedocs.io).
+
+To omit an inventory from being executed as part of the testing phase, set the following 'group_vars' variable:
+
+```
+molecule_test_inventory_skip: true
+```
 
 # Running Tests
 
@@ -30,6 +40,8 @@ ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/param
 ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/params-from-vars
 ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/params-from-both
 ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/pre-post-steps
+ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/patch
+ansible-playbook playbooks/openshift-cluster-seed.yml -i tests/inventories/cluster-template
 ```
 
 

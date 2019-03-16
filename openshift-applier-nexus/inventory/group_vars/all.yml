@@ -1,0 +1,58 @@
+---
+ansible_connection: local
+
+openshift_cluster_content:
+- object: projects
+  content:
+  - name: nexus-namespace
+    template: "{{ inventory_dir }}/../templates/project/projectrequest.yml"
+    params_from_vars:
+      NAMESPACE: nexus3
+      NAMESPACE_DISPLAY_NAME: "Nexus3 Artifactory"
+    action: create
+    tags:
+      - nexus3
+- object: quay-secret
+  content:
+  - name: gogs-quay-secret
+    file: "{{ inventory_dir }}/../templates/configs/secret/quay-secret.yml"
+    namespace: nexus3
+    action: apply
+    tags:
+      - gogs-quay-secret
+- object: default-sa
+  content:
+  - name: default-sa-quay-secret
+    file: "{{ inventory_dir }}/../templates/configs/sa/default-sa.yml"
+    namespace: nexus3
+    action: apply
+    tags:
+      - default-sa-secret
+- object: builder-sa
+  content:
+  - name: builder-sa-quay-secret
+    file: "{{ inventory_dir }}/../templates/configs/sa/builder-sa.yml"
+    namespace: nexus3
+    action: apply
+    tags:
+      - builder-sa-secret
+- object: deployer-sa
+  content:
+  - name: deployer-sa-quay-secret
+    file: "{{ inventory_dir }}/../templates/configs/sa/deployer-sa.yml"
+    namespace: nexus3
+    action: apply
+    tags:
+      - deployer-sa-secret
+- object: gogs-components
+  content:
+  - name: gogs-apps
+    template: "{{ inventory_dir }}/../templates/app/nexus3.yml"
+    params_from_vars:
+      VOLUME_CAPACITY: 10Gi
+      NEXUS_IMAGE_URL: quay.bytewise.com.my/sonatype/nexus3
+      NEXUS_VERSION: latest
+    namespace: "nexus3"
+    tags:
+      - nexus3
+      - nexus3
