@@ -1,0 +1,57 @@
+---
+ansible_connection: local
+
+openshift_cluster_content:
+- object: projects
+  content:
+  - name: nexus-namespace
+    template: "{{ inventory_dir }}/../templates/project/projectrequest.yml"
+    params_from_vars:
+      NAMESPACE: sonarqube
+      NAMESPACE_DISPLAY_NAME: "SonarQube"
+    action: create
+    tags:
+      - sonarqube
+- object: quay-secret
+  content:
+  - name: gogs-quay-secret
+    file: "{{ inventory_dir }}/../templates/configs/secret/quay-secret.yml"
+    namespace: sonarqube
+    action: apply
+    tags:
+      - sonarqube-quay-secret
+- object: default-sa
+  content:
+  - name: default-sa-quay-secret
+    file: "{{ inventory_dir }}/../templates/configs/sa/default-sa.yml"
+    namespace: sonarqube
+    action: apply
+    tags:
+      - default-sa-secret
+- object: builder-sa
+  content:
+  - name: builder-sa-quay-secret
+    file: "{{ inventory_dir }}/../templates/configs/sa/builder-sa.yml"
+    namespace: sonarqube
+    action: apply
+    tags:
+      - builder-sa-secret
+- object: deployer-sa
+  content:
+  - name: deployer-sa-quay-secret
+    file: "{{ inventory_dir }}/../templates/configs/sa/deployer-sa.yml"
+    namespace: sonarqube
+    action: apply
+    tags:
+      - deployer-sa-secret
+- object: sonarqube-components
+  content:
+  - name: sonarqube-apps
+    template: "{{ inventory_dir }}/../templates/app/sonarqube.yml"
+    params_from_vars:
+      DATABASE_MEMORY_LIMIT: 1Gi
+      POSTGRESQL_IMAGE_REPO: quay.bytewise.com.my/rhscl/postgresql-95-rhel7
+      POSTGRESQL_VERSION: latest
+    namespace: "sonarqube"
+    tags:
+      - sonarqube
