@@ -1,0 +1,62 @@
+---
+ansible_connection: local
+
+openshift_cluster_content:
+- object: projects
+  content:
+  - name: gogs-namespace
+    template: "{{ inventory_dir }}/../templates/project/projectrequest.yml"
+    params_from_vars:
+      NAMESPACE: gogs-scm
+      NAMESPACE_DISPLAY_NAME: "Gogs SCM"
+    action: create
+    tags:
+      - gogs-scm
+- object: quay-secret
+  content:
+  - name: gogs-quay-secret
+    file: "{{ inventory_dir }}/../templates/app/quay-secret.yml"
+    namespace: gogs-scm
+    action: apply
+    tags:
+      - gogs-quay-secret
+- object: default-sa
+  content:
+  - name: default-sa-quay-secret
+    file: "{{ inventory_dir }}/../templates/app/default-sa.yml"
+    namespace: gogs-scm
+    action: apply
+    tags:
+      - default-sa-secret
+- object: builder-sa
+  content:
+  - name: builder-sa-quay-secret
+    file: "{{ inventory_dir }}/../templates/app/builder-sa.yml"
+    namespace: gogs-scm
+    action: apply
+    tags:
+      - builder-sa-secret
+- object: deployer-sa
+  content:
+  - name: deployer-sa-quay-secret
+    file: "{{ inventory_dir }}/../templates/app/deployer-sa.yml"
+    namespace: gogs-scm
+    action: apply
+    tags:
+      - deployer-sa-secret
+- object: gogs-components
+  content:
+  - name: gogs-apps
+    template: "{{ inventory_dir }}/../templates/app/gogs.yml"
+    params_from_vars:
+      HOSTNAME: gogs.apps.local.topimerah.net
+      APPLICATION_NAME: gogs
+      GOGS_VOLUME_CAPACITY: 10Gi
+      DB_VOLUME_CAPACITY: 5Gi
+      SKIP_TLS_VERIFY: true
+      GOGS_IMAGE_URL: quay.bytewise.com.my/openshiftdemos/gogs
+      GOGS_VERSION: latest
+    namespace: "gogs-scm"
+    tags:
+      - gogs-scm
+      - gogs
