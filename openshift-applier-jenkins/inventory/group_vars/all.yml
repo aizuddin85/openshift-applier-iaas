@@ -1,0 +1,58 @@
+---
+ansible_connection: local
+
+openshift_cluster_content:
+- object: projects
+  content:
+  - name: jenkins-namespace
+    template: "{{ inventory_dir }}/../templates/project/projectrequest.yml"
+    params_from_vars:
+      NAMESPACE: jenkins
+      NAMESPACE_DISPLAY_NAME: "Jenkins CI/CD"
+    action: create
+    tags:
+      - jenkins
+- object: quay-secret
+  content:
+  - name: gogs-quay-secret
+    file: "{{ inventory_dir }}/../templates/configs/secret/quay-secret.yml"
+    namespace: jenkins
+    action: apply
+    tags:
+      - jenkins-quay-secret
+- object: default-sa
+  content:
+  - name: default-sa-quay-secret
+    file: "{{ inventory_dir }}/../templates/configs/sa/default-sa.yml"
+    namespace: jenkins
+    action: apply
+    tags:
+      - default-sa-secret
+- object: builder-sa
+  content:
+  - name: builder-sa-quay-secret
+    file: "{{ inventory_dir }}/../templates/configs/sa/builder-sa.yml"
+    namespace: jenkins
+    action: apply
+    tags:
+      - builder-sa-secret
+- object: deployer-sa
+  content:
+  - name: deployer-sa-quay-secret
+    file: "{{ inventory_dir }}/../templates/configs/sa/deployer-sa.yml"
+    namespace: jenkins
+    action: apply
+    tags:
+      - deployer-sa-secret
+- object: jenkins-components
+  content:
+  - name: jenkins-apps
+    template: "{{ inventory_dir }}/../templates/app/jenkins.yml"
+    params_from_vars:
+      VOLUME_CAPACITY: 15Gi
+      DISABLE_ADMINISTRATIVE_MONITORS: true
+      ENABLE_FATAL_ERROR_LOG_FILE: true
+      POSTGRESQL_VERSION: latest
+    namespace: "jenkins"
+    tags:
+      - jenkins
