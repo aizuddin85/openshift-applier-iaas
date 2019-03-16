@@ -1,9 +1,0 @@
-apiVersion: v1
-imagePullSecrets:
-- name: quay-secret
-kind: ServiceAccount
-metadata:
-  name: deployer
-secrets:
-- name: quay-secret
-

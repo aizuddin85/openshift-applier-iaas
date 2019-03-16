@@ -15,7 +15,7 @@ openshift_cluster_content:
 - object: quay-secret
   content:
   - name: gogs-quay-secret
-    file: "{{ inventory_dir }}/../templates/app/quay-secret.yml"
+    file: "{{ inventory_dir }}/../templates/configs/secret/quay-secret.yml"
     namespace: gogs-scm
     action: apply
     tags:
@@ -23,7 +23,7 @@ openshift_cluster_content:
 - object: default-sa
   content:
   - name: default-sa-quay-secret
-    file: "{{ inventory_dir }}/../templates/app/default-sa.yml"
+    file: "{{ inventory_dir }}/../templates/configs/sa/default-sa.yml"
     namespace: gogs-scm
     action: apply
     tags:
@@ -31,7 +31,7 @@ openshift_cluster_content:
 - object: builder-sa
   content:
   - name: builder-sa-quay-secret
-    file: "{{ inventory_dir }}/../templates/app/builder-sa.yml"
+    file: "{{ inventory_dir }}/../templates/configs/sa/builder-sa.yml"
     namespace: gogs-scm
     action: apply
     tags:
@@ -39,7 +39,7 @@ openshift_cluster_content:
 - object: deployer-sa
   content:
   - name: deployer-sa-quay-secret
-    file: "{{ inventory_dir }}/../templates/app/deployer-sa.yml"
+    file: "{{ inventory_dir }}/../templates/configs/sa/deployer-sa.yml"
     namespace: gogs-scm
     action: apply
     tags:
