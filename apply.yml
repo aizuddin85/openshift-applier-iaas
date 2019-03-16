@@ -1,5 +1,5 @@
 ---
-- name: Create Project & Gogs Application 
+- name: Create Project & Application 
   hosts: "seed-hosts"
   tasks:
     - include_role:
